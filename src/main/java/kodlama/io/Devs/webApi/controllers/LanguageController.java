@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import kodlama.io.Devs.entities.concretes.ProgrammingLanguage;
 
 import kodlama.io.Devs.business.abstracts.LanguageService;
+import kodlama.io.Devs.business.requests.CreateLanguageRequest;
+import kodlama.io.Devs.business.requests.UpdateLanguageRequest;
+import kodlama.io.Devs.business.responses.GetAllLanguageResponse;
+import kodlama.io.Devs.entities.concretes.ProgrammingLanguage;
 
 @RestController
 @RequestMapping("/api/languages")
@@ -25,12 +28,12 @@ public class LanguageController {
 	}
 	
 	@GetMapping("/getAll")
-	List<ProgrammingLanguage> getAll(){
+	List<GetAllLanguageResponse> getAll(){
 		return languageService.getAll();
 	}
 	
 	@PostMapping("/post")
-	void add(ProgrammingLanguage language) throws Exception {
+	void add(CreateLanguageRequest language) throws Exception {
 		languageService.add(language);
 	}
 	
@@ -40,8 +43,8 @@ public class LanguageController {
 	}
 	
 	@PutMapping("/update")
-	void update(int id, String newName) throws Exception {
-		languageService.update(id, newName);
+	void update(UpdateLanguageRequest request, int id) throws Exception {
+		languageService.update(request,id);
 	}
 	
 	@GetMapping("/getById")

@@ -1,62 +1,96 @@
 package kodlama.io.Devs.business.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlama.io.Devs.business.abstracts.LanguageService;
+import kodlama.io.Devs.business.requests.CreateLanguageRequest;
+import kodlama.io.Devs.business.requests.UpdateLanguageRequest;
+import kodlama.io.Devs.business.responses.GetAllLanguageResponse;
 import kodlama.io.Devs.dataAccess.abstracts.LanguageRepositoryDao;
+import kodlama.io.Devs.dataAccess.abstracts.TechnologyRepository;
 import kodlama.io.Devs.entities.concretes.ProgrammingLanguage;
+import kodlama.io.Devs.entities.concretes.Technology;
 
 @Service
 public class LanguageManager implements LanguageService{
 
-	private LanguageRepositoryDao repositoryDao;
+	private LanguageRepositoryDao languageRepository;
+	private TechnologyRepository techRepository;
 	
 	@Autowired
-	public LanguageManager(LanguageRepositoryDao repositoryDao) {
-		this.repositoryDao = repositoryDao;
+	public LanguageManager(LanguageRepositoryDao languageRepository, TechnologyRepository techRepository) {
+		super();
+		this.languageRepository = languageRepository;
+		this.techRepository = techRepository;
 	}
 
 	@Override
-	public List<ProgrammingLanguage> getAll() {
+	public List<GetAllLanguageResponse> getAll() {
 		
-		return repositoryDao.getAll();
-	}
-
-	@Override
-	public void add(ProgrammingLanguage language) throws Exception {
+		List<ProgrammingLanguage> languages = languageRepository.findAll();
+		List<GetAllLanguageResponse> languageResponse = new ArrayList<GetAllLanguageResponse>();
+		List<Technology> technologies = techRepository.findAll();
 		
-		if(language.getName().isBlank()) {
-			throw new Exception("Please enter a name");
-		}else {
-			for(ProgrammingLanguage languages : repositoryDao.getAll()) {
-				
-				if(languages.getName().equalsIgnoreCase(language.getName())) {
-					
-					throw new Exception("This name is already exists");
+		for(ProgrammingLanguage language : languages) {
+			
+			GetAllLanguageResponse response = new GetAllLanguageResponse();
+			response.setName(language.getName());
+			languageResponse.add(response);
+			
+			for(Technology technology : technologies) {
+				if(technology.getLanguage() == language) {
+					response.setTechnologies(technology);
 				}
 			}
 		}
-			repositoryDao.add(language);
+		return languageResponse;
+	}
+
+	@Override
+	public void add(CreateLanguageRequest request) throws Exception {
+		ProgrammingLanguage language = new ProgrammingLanguage();
+		
+		if(request.getName().isBlank()) {
+			throw new Exception("Please enter a name");
+		}else {
+			for(ProgrammingLanguage languages : languageRepository.findAll()) {
+				
+				if(languages.getName().equalsIgnoreCase(request.getName())) {
+					
+					throw new Exception("This name is already exists");
+				}else {
+					
+					
+					language.setName(request.getName());	
+				}	
+			}
+			languageRepository.save(language);
+		}
+			
 	}
 
 	@Override
 	public void delete(int id) {
-		repositoryDao.delete(id);
+		languageRepository.deleteById(id);
 		
 	}
 
 	@Override
-	public void update(int id, String newName) throws Exception {
+	public void update(UpdateLanguageRequest request, int id) throws Exception {
 		
-		for(ProgrammingLanguage language : repositoryDao.getAll()) {
+		for(ProgrammingLanguage language : languageRepository.findAll()) {
 			
-			if(newName == language.getName() || newName == null) {
+			if(request.getName() == language.getName() || request.getName() == null) {
 				throw new Exception("Please enter a new name");
-			}else {
-				repositoryDao.update(id, newName);
+			}else if(language.getId() == id){
+				
+				language.setName(request.getName());
+			
+				languageRepository.save(language);
 			}
 		}
 		
@@ -65,7 +99,8 @@ public class LanguageManager implements LanguageService{
 	@Override
 	public ProgrammingLanguage getById(int id) {
 		
-		return repositoryDao.getById(id);
+		return languageRepository.findById(id);
 	}
+
 
 }
