@@ -38,6 +38,9 @@ public class ProgrammingLanguage {
 	@OneToMany(mappedBy = "language", cascade = CascadeType.DETACH)
 	private List<Technology> technologies;
 
+
+	
+
 	
 
 }

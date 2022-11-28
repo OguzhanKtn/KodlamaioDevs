@@ -17,53 +17,53 @@ import kodlama.io.Devs.entities.concretes.*;
 @Service
 public class TechnologyManager implements TechnologyService{
 
-	private TechnologyRepository techRepository;
+	private TechnologyRepository technologyRepository;
 	private LanguageRepositoryDao languageRepository;
 	
 	@Autowired
-	public TechnologyManager(TechnologyRepository techRepository,LanguageRepositoryDao languageRepository) {
+	public TechnologyManager(TechnologyRepository technologyRepository,LanguageRepositoryDao languageRepository) {
 		super();
-		this.techRepository = techRepository;
+		this.technologyRepository = technologyRepository;
 		this.languageRepository = languageRepository;
 	}
 
 	@Override
 	public List<GetAllTechnologyResponse> getAll() {
 		
-		List<Technology> technologies = techRepository.findAll();
+		List<Technology> technologies = technologyRepository.findAll();
 		List<GetAllTechnologyResponse> techResponse = new ArrayList<GetAllTechnologyResponse>();
 		
-		for(Technology tech : technologies) {
+		for(Technology technology : technologies) {
 			GetAllTechnologyResponse response = new GetAllTechnologyResponse();
-			response.setName(tech.getName());
+			response.setName(technology.getName());
 			techResponse.add(response);
 		}
 		return techResponse;
 	}
 
 	@Override
-	public void add(CreateTechnologyRequest technology) throws Exception {
-		Technology tech = new Technology();
+	public void add(CreateTechnologyRequest technologyRequest) throws Exception {
+		Technology technology = new Technology();
 		
 		
-		if(technology.getName().isBlank()) {
+		if(technologyRequest.getName().isBlank()) {
 			throw new Exception("Please enter a name");
 		}else{
-			for(Technology techs : techRepository.findAll()) {
-				if(technology.getName() == techs.getName()) {
+			for(Technology technologies : technologyRepository.findAll()) {
+				if(technologies.getName().equalsIgnoreCase(technologyRequest.getName())) {
 					throw new Exception("This name is already exist.");
 				}else {
 					
-				}		tech.setName(technology.getName());	
+				}		technology.setName(technologyRequest.getName());	
 						
 				for(ProgrammingLanguage language : languageRepository.findAll()) {
 					
-					if(language.getName()== technology.getLanguageName()) {
-						tech.setLanguage(language);
+					if(language.getName().equalsIgnoreCase(technologyRequest.getLanguageName())) {
+						technology.setLanguage(language);
 					}
 				}			
 			}
-				techRepository.save(tech);
+				technologyRepository.save(technology);
 		}
 		
 	}
@@ -71,14 +71,14 @@ public class TechnologyManager implements TechnologyService{
 	@Override
 	public void delete(int id) {
 		
-		techRepository.deleteById(id);
+		technologyRepository.deleteById(id);
 		
 	}
 
 	@Override
 	public void update(UpdateTechnologyRequest request,int id) throws Exception {
 		
-		Technology technology = techRepository.findById(id);
+		Technology technology = technologyRepository.findById(id);
 		
 		technology.setName(request.getName());
 		
@@ -88,7 +88,7 @@ public class TechnologyManager implements TechnologyService{
 			}
 		}
 		
-		techRepository.save(technology);
+		technologyRepository.save(technology);
 		
 		
 	}

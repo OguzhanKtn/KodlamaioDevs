@@ -24,14 +24,14 @@ import lombok.Setter;
 public class Technology {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="id")
-	private int id;
+	private Integer id;
 	
 	@Column(name="name")
 	private String name;
 	
-	@ManyToOne(cascade = CascadeType.DETACH)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "language_id")
 	private ProgrammingLanguage language;
 

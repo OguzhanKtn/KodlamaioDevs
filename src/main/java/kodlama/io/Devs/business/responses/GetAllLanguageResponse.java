@@ -1,5 +1,7 @@
 package kodlama.io.Devs.business.responses;
 
+import java.util.List;
+
 import kodlama.io.Devs.entities.concretes.Technology;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class GetAllLanguageResponse {
 	
 	private String name;
-	private Technology technologies;
-
+	private List<Technology> technologies;
+	
 }
