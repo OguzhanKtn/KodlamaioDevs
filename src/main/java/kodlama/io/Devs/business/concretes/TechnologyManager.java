@@ -60,6 +60,8 @@ public class TechnologyManager implements TechnologyService{
 					
 					if(language.getName().equalsIgnoreCase(technologyRequest.getLanguageName())) {
 						technology.setLanguage(language);
+					}else {
+						throw new Exception("This language doesn't exist.");
 					}
 				}			
 			}
@@ -83,7 +85,7 @@ public class TechnologyManager implements TechnologyService{
 		technology.setName(request.getName());
 		
 		for(ProgrammingLanguage language : languageRepository.findAll()) {
-			if(language.getName() == request.getLanguageName()) {
+			if(language.getName().equalsIgnoreCase(request.getLanguageName())) {
 				technology.setLanguage(language);
 			}
 		}
